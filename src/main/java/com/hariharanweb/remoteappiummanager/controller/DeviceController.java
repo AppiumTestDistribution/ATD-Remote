@@ -1,16 +1,24 @@
 package com.hariharanweb.remoteappiummanager.controller;
 
-import com.thoughtworks.device.Device;
 import com.thoughtworks.device.DeviceManager;
 import spark.Route;
 
-import java.util.List;
-
 public class DeviceController {
-    public Route getDevices = (request, response) -> {
-        DeviceManager deviceManager = new DeviceManager();
-        List<Device> deviceProperties = deviceManager.getDeviceProperties();
 
-        return deviceProperties;
+    private DeviceManager deviceManager;
+
+    public DeviceController(){
+        deviceManager = new DeviceManager();
+    }
+
+    public Route getDevices = (request, response) -> deviceManager.getDeviceProperties();
+    public Route getDevice = (request, response) -> {
+        try{
+            return deviceManager.getDeviceProperties(request.params(":udid"));
+        }catch (Exception e){
+            response.status(404);
+            response.body(e.getMessage());
+        }
+        return null;
     };
 }

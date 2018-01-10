@@ -14,6 +14,10 @@ public class Server {
 
         get("/devices", deviceController.getDevices, new JsonTransformer());
 
+        path("/device/:udid", () -> {
+            get("", deviceController.getDevice, new JsonTransformer());
+        });
+
         path("/appium", () -> {
             get("/start", appiumController.startAppium);
             get("/stop", appiumController.stopAppium);
