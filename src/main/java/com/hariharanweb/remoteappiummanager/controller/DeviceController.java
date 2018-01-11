@@ -13,7 +13,7 @@ public class DeviceController {
 
     public Route getDevices = (request, response) -> {
         try {
-             return deviceManager.getDeviceProperties();
+             return deviceManager.getDevices();
         } catch (Exception e){
             response.status(404);
             response.body(e.getMessage());
@@ -22,7 +22,7 @@ public class DeviceController {
     };
     public Route getDevice = (request, response) -> {
         try{
-            return deviceManager.getDeviceProperties(request.params(":udid"));
+            return deviceManager.getDevice(request.params(":udid"));
         }catch (Exception e){
             response.status(404);
             response.body(e.getMessage());

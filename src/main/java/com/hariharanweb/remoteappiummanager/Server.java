@@ -23,5 +23,9 @@ public class Server {
             get("/start", appiumController.startAppium);
             get("/stop", appiumController.stopAppium);
         });
+
+        after((request, response) -> {
+            response.header("Content-Type", "application/json");
+        });
     }
 }
