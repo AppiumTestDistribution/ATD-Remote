@@ -12,6 +12,7 @@ public class Server {
         DeviceController deviceController = new DeviceController();
         AppiumController appiumController = new AppiumController();
 
+        get("/", (req, res) -> "Server is Running!!!");
         get("/devices", deviceController.getDevices, new JsonTransformer());
 
         path("/device/:udid", () -> {
