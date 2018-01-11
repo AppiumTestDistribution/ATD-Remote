@@ -11,7 +11,15 @@ public class DeviceController {
         deviceManager = new DeviceManager();
     }
 
-    public Route getDevices = (request, response) -> deviceManager.getDeviceProperties();
+    public Route getDevices = (request, response) -> {
+        try {
+             return deviceManager.getDeviceProperties();
+        } catch (Exception e){
+            response.status(404);
+            response.body(e.getMessage());
+        }
+        return response.body();
+    };
     public Route getDevice = (request, response) -> {
         try{
             return deviceManager.getDeviceProperties(request.params(":udid"));
