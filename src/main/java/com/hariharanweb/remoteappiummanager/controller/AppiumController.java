@@ -28,6 +28,12 @@ public class AppiumController {
         return response.body();
     };
 
+    public Route isAppiumServerRunning =(request, response) ->{
+        if(appiumDriverLocalService!=null && appiumDriverLocalService.isRunning())
+            return "true";
+        else return "false";
+    };
+
     private AppiumDriverLocalService startAppiumServer(String path) {
 
         AppiumServiceBuilder builder =

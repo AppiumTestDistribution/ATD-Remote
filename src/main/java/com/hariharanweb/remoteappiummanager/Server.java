@@ -3,7 +3,6 @@ package com.hariharanweb.remoteappiummanager;
 import com.hariharanweb.remoteappiummanager.controller.AppiumController;
 import com.hariharanweb.remoteappiummanager.controller.DeviceController;
 import com.hariharanweb.remoteappiummanager.transformers.JsonTransformer;
-import spark.Spark;
 
 import static spark.Spark.*;
 
@@ -23,6 +22,7 @@ public class Server {
             get("/start", appiumController.startAppium, new JsonTransformer());
             get("/start/*", appiumController.startAppiumWithCustomPath, new JsonTransformer());
             get("/stop", appiumController.stopAppium, new JsonTransformer());
+            get("/isRunning", appiumController.isAppiumServerRunning, new JsonTransformer());
         });
 
         after((request, response) -> {
