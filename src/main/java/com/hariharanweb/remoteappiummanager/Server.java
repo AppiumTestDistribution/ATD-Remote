@@ -20,8 +20,9 @@ public class Server {
         });
 
         path("/appium", () -> {
-            get("/start", appiumController.startAppium);
-            get("/stop", appiumController.stopAppium);
+            get("/start", appiumController.startAppium, new JsonTransformer());
+            get("/start/*", appiumController.startAppiumWithCustomPath, new JsonTransformer());
+            get("/stop", appiumController.stopAppium, new JsonTransformer());
         });
 
         after((request, response) -> {

@@ -1,15 +1,48 @@
 package com.hariharanweb.remoteappiummanager.controller;
 
+import io.appium.java_client.service.local.AppiumDriverLocalService;
+import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.appium.java_client.service.local.flags.GeneralServerFlag;
 import spark.Route;
 
+import java.io.File;
+
 public class AppiumController {
+    AppiumDriverLocalService appiumDriverLocalService;
     public Route startAppium =(request, response) -> {
-        //some command to start appium comes here and return if success or failure
-        return "Starting Appium server";
+        startAppiumServer("/usr/local/lib/node_modules/appium/build/lib/main.js");
+        return appiumDriverLocalService.getUrl().toString();
+    };
+
+    public Route startAppiumWithCustomPath =(request, response) -> {
+        //http://127.0.0.1:4567/appium/start/?URL=/usr/local/lib/node_modules/appium/build/lib/main.js
+        startAppiumServer(request.queryParamsValues("URL")[0]);
+        return appiumDriverLocalService.getUrl().toString();
     };
 
     public Route stopAppium =(request, response) -> {
-        //some command to stop appium comes here and return if success or failure
-        return "Stopping Appium server";
+        appiumDriverLocalService.stop();
+        if(!appiumDriverLocalService.isRunning()) {
+            response.body("Server is stopped");
+        }
+        return response.body();
     };
+
+    private AppiumDriverLocalService startAppiumServer(String path) {
+
+        AppiumServiceBuilder builder =
+                new AppiumServiceBuilder().withAppiumJS(new File(path))
+                        .withArgument(GeneralServerFlag.LOG_LEVEL, "info")
+                        .withIPAddress("127.0.0.1")
+                        .usingAnyFreePort();
+        appiumDriverLocalService = AppiumDriverLocalService.buildService(builder);
+        appiumDriverLocalService.start();
+        System.out.println(
+                "**************************************************************************\n");
+        System.out.println("Appium Server Started at......"
+                + appiumDriverLocalService.getUrl().getPort());
+        System.out.println(
+                "**************************************************************************\n");
+        return appiumDriverLocalService;
+    }
 }
