@@ -4,15 +4,23 @@ import com.hariharanweb.remoteappiummanager.controller.AppiumController;
 import com.hariharanweb.remoteappiummanager.controller.DeviceController;
 import com.hariharanweb.remoteappiummanager.transformers.JsonTransformer;
 
+import java.util.logging.Logger;
+
 import static spark.Spark.*;
 
 public class Server {
     public static void main(String[] args) {
+        final Logger LOGGER =
+                Logger.getLogger(Server.class.getName());
+        if (System.getProperty("port") != null) {
+            port(Integer.parseInt(System.getProperty("port")));
+            LOGGER.info("Started Server on port" + System.getProperty("port"));
+        }
         DeviceController deviceController = new DeviceController();
         AppiumController appiumController = new AppiumController();
 
         get("/", (req, res) -> "Server is Running!!!");
-        get("/devices", deviceController.getDevices, new JsonTransformer());
+        get("/devices", deviceController.getDevices,new JsonTransformer());
 
         path("/device/:udid", () -> {
             get("", deviceController.getDevice, new JsonTransformer());
