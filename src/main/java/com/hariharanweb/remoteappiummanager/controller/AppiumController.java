@@ -32,6 +32,14 @@ public class AppiumController {
         if(appiumDriverLocalService!=null && appiumDriverLocalService.isRunning())
             return "true";
         else return "false";
+
+
+    };
+
+    public Route getAppiumLogs=(request, response) -> {
+        if(appiumDriverLocalService!=null)
+            return appiumDriverLocalService.getStdOut();
+        return response.body();
     };
 
     private AppiumDriverLocalService startAppiumServer(String path) {
