@@ -20,7 +20,7 @@ public class Server {
         AppiumController appiumController = new AppiumController();
 
         get("/", (req, res) -> "Server is Running!!!");
-        get("/devices", deviceController.getDevices);
+        get("/devices", deviceController.getDevices,new JsonTransformer());
 
         path("/device/:udid", () -> {
             get("", deviceController.getDevice, new JsonTransformer());
@@ -28,10 +28,9 @@ public class Server {
 
         path("/appium", () -> {
             get("/start", appiumController.startAppium, new JsonTransformer());
-            get("/start/*", appiumController.startAppiumWithCustomPath, new JsonTransformer());
             get("/stop", appiumController.stopAppium, new JsonTransformer());
             get("/isRunning", appiumController.isAppiumServerRunning, new JsonTransformer());
-            get("/logs", appiumController.getAppiumLogs, new JsonTransformer());
+            get("/logs",appiumController.getAppiumLogs);
         });
 
         after((request, response) -> {
