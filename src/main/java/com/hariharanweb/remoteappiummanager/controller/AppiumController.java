@@ -1,6 +1,7 @@
 package com.hariharanweb.remoteappiummanager.controller;
 
 import com.google.gson.JsonObject;
+import com.hariharanweb.remoteappiummanager.helpers.TryParseInt;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
@@ -13,12 +14,16 @@ public class AppiumController {
     AppiumDriverLocalService appiumDriverLocalService;
     public Route startAppium = (request, response) -> {
         String appiumPath = "/usr/local/lib/node_modules/appium/build/lib/main.js";
-
+        int port=0;
         String[] urlParameter = request.queryParamsValues("URL");
         if (urlParameter != null && urlParameter[0] != null) {
             appiumPath = urlParameter[0];
         }
-        startAppiumServer(appiumPath);
+        String [] portParameter = request.queryParamsValues("PORT");
+        if(portParameter!=null && portParameter[0]!=null){
+            port= TryParseInt.tryParseInt(portParameter[0]);
+        }
+        startAppiumServer(appiumPath,port);
         URL url = appiumDriverLocalService.getUrl();
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("port", url.getPort());
@@ -48,12 +53,13 @@ public class AppiumController {
         return response.body();
     };
 
-    private AppiumDriverLocalService startAppiumServer(String path) {
+    private AppiumDriverLocalService startAppiumServer(String path, int port) {
 
+        AppiumServiceBuilder appiumServiceBuilder = new AppiumServiceBuilder().withAppiumJS(new File(path))
+                .withArgument(GeneralServerFlag.LOG_LEVEL, "info")
+                .withIPAddress("127.0.0.1");
         AppiumServiceBuilder builder =
-                new AppiumServiceBuilder().withAppiumJS(new File(path))
-                        .withArgument(GeneralServerFlag.LOG_LEVEL, "info")
-                        .withIPAddress("127.0.0.1")
+                port > 0 ? appiumServiceBuilder.usingPort(port) : appiumServiceBuilder
                         .usingAnyFreePort();
         appiumDriverLocalService = AppiumDriverLocalService.buildService(builder);
         appiumDriverLocalService.start();
