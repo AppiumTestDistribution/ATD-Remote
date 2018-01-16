@@ -1,19 +1,30 @@
 package com.hariharanweb.remoteappiummanager;
 
+import com.hariharanweb.helpers.Helpers;
 import com.hariharanweb.remoteappiummanager.controller.AppiumController;
 import com.hariharanweb.remoteappiummanager.controller.DeviceController;
 import com.hariharanweb.remoteappiummanager.transformers.JsonTransformer;
 
+import java.io.IOException;
+import java.net.PortUnreachableException;
 import java.util.logging.Logger;
 
+import static com.hariharanweb.helpers.Helpers.available;
 import static spark.Spark.*;
 
 public class Server {
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws IOException {
+
         final Logger LOGGER =
                 Logger.getLogger(Server.class.getName());
         if (System.getProperty("port") != null) {
-            port(Integer.parseInt(System.getProperty("port")));
+            int port = Integer.parseInt(System.getProperty("port"));
+            if (available(port)) {
+                port(port);
+            } else {
+                throw new RuntimeException("Port" + port + " in use");
+            }
             LOGGER.info("Started Server on port" + System.getProperty("port"));
         }
         DeviceController deviceController = new DeviceController();
