@@ -1,11 +1,13 @@
 package com.hariharanweb.helpers;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class Helpers {
 
-    public static boolean available(int port) throws IOException {
+    public static boolean isPortAvailable(int port) throws IOException {
         Socket s = null;
         try {
             s = new Socket("localhost", port);
@@ -21,5 +23,22 @@ public class Helpers {
                 }
             }
         }
+    }
+
+    public static String excuteProcess(String command) throws IOException {
+        Process process = Runtime.getRuntime().exec(command);
+        // get std output
+        BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line = "";
+        String allLine = "";
+        int i = 1;
+        while ((line = r.readLine()) != null) {
+            allLine = allLine + "" + line + "\n";
+            if (line.contains("Console LogLevel: debug") && line.contains("Complete")) {
+                break;
+            }
+            i++;
+        }
+        return allLine;
     }
 }
