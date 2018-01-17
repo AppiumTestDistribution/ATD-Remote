@@ -1,10 +1,13 @@
 package com.hariharanweb.remoteappiummanager.controller;
 
 import com.thoughtworks.android.AndroidManager;
+import com.thoughtworks.device.Device;
 import com.thoughtworks.device.DeviceManager;
 import com.thoughtworks.device.SimulatorManager;
 import com.thoughtworks.iOS.IOSManager;
 import spark.Route;
+
+import java.util.List;
 
 public class DeviceController {
 
@@ -13,7 +16,7 @@ public class DeviceController {
     private IOSManager iosManager;
     private AndroidManager androidManager;
 
-    public DeviceController(){
+    public DeviceController() {
         deviceManager = new DeviceManager();
         simulatorManager = new SimulatorManager();
         iosManager = new IOSManager();
@@ -40,19 +43,19 @@ public class DeviceController {
     };
 
     public Route getSimulators = (request, response) -> {
-        try{
-            return simulatorManager.getAllSimulators("iOS");
-        }catch (Exception e){
-            response.status(404);
-            response.body(e.getMessage());
+        List<Device> allSimulators = simulatorManager.getAllSimulators("iOS");
+        String[] simulatorName = request.queryParamsValues("simulatorName");
+        String[] simulatorOSVersion = request.queryParamsValues("simulatorOSVersion");
+        if (simulatorName != null && simulatorOSVersion != null) {
+            return simulatorManager.getDevice(simulatorName[0],simulatorOSVersion[0],"iOS");
         }
-        return null;
+        return allSimulators;
     };
 
     public Route getIOSDevices = (request, response) -> {
-        try{
+        try {
             return iosManager.getDevices();
-        }catch (Exception e){
+        } catch (Exception e) {
             response.status(404);
             response.body(e.getMessage());
         }
