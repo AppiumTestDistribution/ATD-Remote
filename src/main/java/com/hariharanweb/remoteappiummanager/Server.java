@@ -43,6 +43,14 @@ public class Server {
             });
         });
 
+        path("/startadblog", () -> {
+            get("", deviceController.startADBLog, new JsonTransformer());
+        });
+
+        path("/stopadblog/:udid", () -> {
+            get("", deviceController.stopADBLog, new JsonTransformer());
+        });
+
         path("/appium", () -> {
             get("/start", appiumController.startAppium, new JsonTransformer());
             get("/stop", appiumController.stopAppium, new JsonTransformer());

@@ -25,17 +25,17 @@ public class DeviceController {
 
     public Route getDevices = (request, response) -> {
         try {
-             return deviceManager.getDevices();
-        } catch (Exception e){
+            return deviceManager.getDevices();
+        } catch (Exception e) {
             response.status(404);
             response.body(e.getMessage());
         }
         return response.body();
     };
     public Route getDevice = (request, response) -> {
-        try{
+        try {
             return deviceManager.getDevice(request.params(":udid"));
-        }catch (Exception e){
+        } catch (Exception e) {
             response.status(404);
             response.body(e.getMessage());
         }
@@ -47,7 +47,7 @@ public class DeviceController {
         String[] simulatorName = request.queryParamsValues("simulatorName");
         String[] simulatorOSVersion = request.queryParamsValues("simulatorOSVersion");
         if (simulatorName != null && simulatorOSVersion != null) {
-            return simulatorManager.getDevice(simulatorName[0],simulatorOSVersion[0],"iOS");
+            return simulatorManager.getDevice(simulatorName[0], simulatorOSVersion[0], "iOS");
         }
         return allSimulators;
     };
@@ -63,12 +63,21 @@ public class DeviceController {
     };
 
     public Route getAndroidDevices = (request, response) -> {
-        try{
+        try {
             return androidManager.getDevices();
-        }catch (Exception e){
+        } catch (Exception e) {
             response.status(404);
             response.body(e.getMessage());
         }
         return null;
+    };
+
+    public Route startADBLog = (request, response) -> {
+        String[] udid = request.queryParamsValues("udid");
+        String[] fileName = request.queryParamsValues("fileName");
+        return androidManager.startADBLog(udid[0], fileName[0]);
+    };
+    public Route stopADBLog = (request, response) -> {
+        return androidManager.stopADBLog(request.params(":udid"));
     };
 }
