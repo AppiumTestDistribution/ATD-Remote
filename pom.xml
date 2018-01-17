@@ -90,9 +90,9 @@
             <version>2.7.1</version>
         </dependency>
         <dependency>
-                <groupId>com.github.SrinivasanTarget</groupId>
-                <artifactId>DeviceManager</artifactId>
-                <version>4c69aedbd3</version>
+            <groupId>com.github.SrinivasanTarget</groupId>
+            <artifactId>DeviceManager</artifactId>
+            <version>4c69aedbd3</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
