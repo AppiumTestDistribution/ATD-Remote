@@ -43,11 +43,11 @@ public class Server {
             });
         });
 
-        path("/startadblog", () -> {
+        path("/device/adblog/start", () -> {
             get("", deviceController.startADBLog, new JsonTransformer());
         });
 
-        path("/stopadblog/:udid", () -> {
+        path("/device/adblog/stop/:udid", () -> {
             get("", deviceController.stopADBLog, new JsonTransformer());
         });
 
