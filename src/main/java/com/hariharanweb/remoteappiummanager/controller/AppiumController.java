@@ -5,8 +5,12 @@ import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
 import spark.Route;
+import spark.Spark;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.URL;
 
 public class AppiumController {
@@ -48,12 +52,15 @@ public class AppiumController {
         return response.body();
     };
 
-    private AppiumDriverLocalService startAppiumServer(String path) {
-
+    private AppiumDriverLocalService startAppiumServer(String path) throws IOException {
+        Socket socket = new Socket();
+        socket.connect(new InetSocketAddress("google.com", 80));
+        String ipAddress = socket.getLocalAddress().toString()
+                .replace("/","");
         AppiumServiceBuilder builder =
                 new AppiumServiceBuilder().withAppiumJS(new File(path))
                         .withArgument(GeneralServerFlag.LOG_LEVEL, "info")
-                        .withIPAddress("127.0.0.1")
+                        .withIPAddress(ipAddress)
                         .usingAnyFreePort();
         appiumDriverLocalService = AppiumDriverLocalService.buildService(builder);
         appiumDriverLocalService.start();
