@@ -42,7 +42,10 @@ public class Server {
                 get("", deviceController.getAndroidDevices, new JsonTransformer());
             });
         });
-
+        path("/device/adblog", () -> {
+            get("/start", deviceController.startADBLog, new JsonTransformer());
+            get("/stop/:udid", deviceController.stopADBLog, new JsonTransformer());
+        });
         path("/appium", () -> {
             get("/start", appiumController.startAppium, new JsonTransformer());
             get("/stop", appiumController.stopAppium, new JsonTransformer());
@@ -50,7 +53,7 @@ public class Server {
             get("/logs", appiumController.getAppiumLogs);
         });
 
-        path("/machine",()->{
+        path("/machine", () -> {
             get("/xcodeVersion", machineController.getXCodeVersion);
         });
 
