@@ -33,13 +33,11 @@ public class Server {
         get("/devices", deviceController.getDevices, new JsonTransformer());
 
         path("/device", () -> {
+            get("/android", deviceController.getAndroidDevices, new JsonTransformer());
             get("/:udid", deviceController.getDevice, new JsonTransformer());
             path("/ios", () -> {
                 get("/simulators", deviceController.getSimulators, new JsonTransformer());
                 get("/realDevice", deviceController.getIOSDevices, new JsonTransformer());
-            });
-            path("/android", () -> {
-                get("", deviceController.getAndroidDevices, new JsonTransformer());
             });
         });
         path("/device/adblog", () -> {
