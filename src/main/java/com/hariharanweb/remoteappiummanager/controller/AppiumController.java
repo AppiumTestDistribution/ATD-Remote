@@ -43,6 +43,7 @@ public class AppiumController {
             isAppiumRunning = true;
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("status", isAppiumRunning);
+        jsonObject.addProperty("port", appiumDriverLocalService.getUrl().getPort());
         return jsonObject;
     };
 
