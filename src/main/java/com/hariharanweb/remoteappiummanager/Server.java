@@ -53,10 +53,9 @@ public class Server {
 
         path("/machine", () -> {
             get("/xcodeVersion", machineController.getXCodeVersion);
+            get("/availablePort", machineController.getAvailablePort);
         });
 
-        after((request, response) -> {
-            response.header("Content-Type", "application/json");
-        });
+        after((request, response) -> response.header("Content-Type", "application/json"));
     }
 }
