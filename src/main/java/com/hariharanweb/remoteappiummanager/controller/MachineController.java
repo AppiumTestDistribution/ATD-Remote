@@ -25,4 +25,6 @@ public class MachineController {
         }
 
     };
+
+    public Route getAvailablePort = (request,response ) -> new Helpers().getAvailablePort();
 }
