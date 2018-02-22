@@ -10,7 +10,6 @@ import spark.Route;
 public class MachineController {
 
     public Route getXCodeVersion = (request, response) -> {
-        String buildversion = "";
         try {
             String commandOutput = Helpers.excuteProcess("xcodebuild -version");
             String[] results = commandOutput.split("\n");
@@ -26,7 +25,5 @@ public class MachineController {
 
     };
 
-    public Route getAvailablePort = (request,response ) -> {
-        return new Helpers().getAvailablePort();
-    };
+    public Route getAvailablePort = (request,response ) -> new Helpers().getAvailablePort();
 }

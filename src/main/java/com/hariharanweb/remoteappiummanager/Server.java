@@ -1,6 +1,7 @@
 package com.hariharanweb.remoteappiummanager;
 
 import com.hariharanweb.remoteappiummanager.controller.AppiumController;
+import com.hariharanweb.remoteappiummanager.controller.ArtifactsController;
 import com.hariharanweb.remoteappiummanager.controller.DeviceController;
 import com.hariharanweb.remoteappiummanager.controller.MachineController;
 import com.hariharanweb.remoteappiummanager.transformers.JsonTransformer;
@@ -26,9 +27,13 @@ public class Server {
             }
             LOGGER.info("Started Server on port" + System.getProperty("port"));
         }
+        staticFiles.location("public");
+
         DeviceController deviceController = new DeviceController();
         AppiumController appiumController = new AppiumController();
         MachineController machineController = new MachineController();
+        ArtifactsController artifactsController = new ArtifactsController();
+
         get("/", (req, res) -> "Server is Running!!!");
         get("/devices", deviceController.getDevices, new JsonTransformer());
 
@@ -54,6 +59,10 @@ public class Server {
         path("/machine", () -> {
             get("/xcodeVersion", machineController.getXCodeVersion);
             get("/availablePort", machineController.getAvailablePort);
+        });
+
+        path("/artifacts", ()-> {
+           post("/upload", artifactsController.upload);
         });
 
         after((request, response) -> response.header("Content-Type", "application/json"));
