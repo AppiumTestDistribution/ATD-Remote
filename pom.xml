@@ -92,7 +92,7 @@
         <dependency>
             <groupId>com.github.SrinivasanTarget</groupId>
             <artifactId>DeviceManager</artifactId>
-            <version>e00a3a58a7</version>
+            <version>dd44594</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
