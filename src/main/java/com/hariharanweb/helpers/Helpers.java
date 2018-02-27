@@ -3,6 +3,7 @@ package com.hariharanweb.helpers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -30,7 +31,7 @@ public class Helpers {
     /* * Generates Random ports
     * Used during starting appium server
     */
-    public int getAvailablePort() throws IOException {
+    public static int getAvailablePort() throws IOException {
         ServerSocket socket = new ServerSocket(0);
         socket.setReuseAddress(true);
         int port = socket.getLocalPort();
@@ -53,5 +54,12 @@ public class Helpers {
             i++;
         }
         return allLine;
+    }
+
+    public static String getHostMachineIpAddress() throws IOException {
+        Socket socket = new Socket();
+        socket.connect(new InetSocketAddress("google.com", 80));
+        return socket.getLocalAddress().toString()
+                .replace("/", "");
     }
 }
