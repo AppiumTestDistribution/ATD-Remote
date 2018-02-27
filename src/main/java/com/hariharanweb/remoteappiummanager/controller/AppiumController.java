@@ -1,6 +1,7 @@
 package com.hariharanweb.remoteappiummanager.controller;
 
 import com.google.gson.JsonObject;
+import com.hariharanweb.helpers.Helpers;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
@@ -8,14 +9,12 @@ import spark.Route;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.URL;
 
 public class AppiumController {
     AppiumDriverLocalService appiumDriverLocalService;
     public Route startAppium = (request, response) -> {
-        String appiumPath = "/usr/local/lib/node_modules/appium/build/lib/main.js";
+        String appiumPath = null;
 
         String[] urlParameter = request.queryParamsValues("URL");
         if (urlParameter != null && urlParameter[0] != null) {
@@ -53,15 +52,16 @@ public class AppiumController {
     };
 
     private AppiumDriverLocalService startAppiumServer(String path) throws IOException {
-        Socket socket = new Socket();
-        socket.connect(new InetSocketAddress("google.com", 80));
-        String ipAddress = socket.getLocalAddress().toString()
-                .replace("/","");
+        String ipAddress = Helpers.getHostMachineIpAddress();
         AppiumServiceBuilder builder =
-                new AppiumServiceBuilder().withAppiumJS(new File(path))
+                new AppiumServiceBuilder()
                         .withArgument(GeneralServerFlag.LOG_LEVEL, "info")
                         .withIPAddress(ipAddress)
                         .usingAnyFreePort();
+
+        if (path != null && !path.isEmpty()) {
+            builder.withAppiumJS(new File(path));
+        }
         appiumDriverLocalService = AppiumDriverLocalService.buildService(builder);
         appiumDriverLocalService.start();
         System.out.println(
@@ -72,4 +72,6 @@ public class AppiumController {
                 "**************************************************************************\n");
         return appiumDriverLocalService;
     }
+
+
 }
