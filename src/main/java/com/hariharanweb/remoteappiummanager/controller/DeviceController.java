@@ -42,7 +42,19 @@ public class DeviceController {
         return null;
     };
 
-    public Route getSimulators = (request, response) -> {
+    public Route getIOSDevices = ((request, response) -> {
+        try {
+            List<Device> devices = iosManager.getDevices();
+            devices.addAll(simulatorManager.getAllBootedSimulators("iOS"));
+            return devices;
+        } catch (Exception e) {
+            response.status(404);
+            response.body(e.getMessage());
+        }
+        return null;
+    });
+
+    public Route getSimulator = (request, response) -> {
         List<Device> allSimulators = simulatorManager.getAllSimulators("iOS");
         String[] simulatorName = request.queryParamsValues("simulatorName");
         String[] simulatorOSVersion = request.queryParamsValues("simulatorOSVersion");
@@ -52,7 +64,7 @@ public class DeviceController {
         return allSimulators;
     };
 
-    public Route getIOSDevices = (request, response) -> {
+    public Route getIOSRealDevices = (request, response) -> {
         try {
             return iosManager.getDevices();
         } catch (Exception e) {

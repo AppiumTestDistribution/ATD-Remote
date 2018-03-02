@@ -35,14 +35,26 @@ public class Server {
         ArtifactsController artifactsController = new ArtifactsController();
 
         get("/", (req, res) -> "Server is Running!!!");
+        //Get all Android, IOS Devices & Booted Sims
         get("/devices", deviceController.getDevices, new JsonTransformer());
 
-        path("/device", () -> {
+        path("/devices", () -> {
+            //Get all Android Devices
             get("/android", deviceController.getAndroidDevices, new JsonTransformer());
+            //Get all Booted Sims + Real devices
+            get("/ios", deviceController.getIOSDevices, new JsonTransformer());
+            path("/ios", () -> {
+                //Get all iOS Real devices
+                get("/realDevices", deviceController.getIOSRealDevices, new JsonTransformer());
+            });
+        });
+
+        path("/device", () -> {
+            //Returns Specific Android or IOS Device
             get("/:udid", deviceController.getDevice, new JsonTransformer());
             path("/ios", () -> {
-                get("/simulators", deviceController.getSimulators, new JsonTransformer());
-                get("/realDevice", deviceController.getIOSDevices, new JsonTransformer());
+                //Return iOS Sim
+                get("/simulator", deviceController.getSimulator, new JsonTransformer());
             });
         });
         path("/device/adblog", () -> {
