@@ -1,5 +1,6 @@
 package com.hariharanweb.remoteappiummanager.controller;
 
+import com.hariharanweb.helpers.Helpers;
 import com.thoughtworks.android.AndroidManager;
 import com.thoughtworks.device.Device;
 import com.thoughtworks.device.DeviceManager;
@@ -67,6 +68,38 @@ public class DeviceController {
     public Route getIOSRealDevices = (request, response) -> {
         try {
             return iosManager.getDevices();
+        } catch (Exception e) {
+            response.status(404);
+            response.body(e.getMessage());
+        }
+        return null;
+    };
+
+    public Route startWebkitProxy = (request, response) -> {
+        try {
+            String[] udid = request.queryParamsValues("udid");
+            String[] port = request.queryParamsValues("port");
+            String webkitRunner = "ios_webkit_debug_proxy -c " + udid[0] + ":" + port[0];
+            Process p1 = Runtime.getRuntime().exec(webkitRunner);
+            int pid = new Helpers().getPid(p1);
+            return pid;
+        } catch (Exception e) {
+            response.status(404);
+            response.body(e.getMessage());
+        }
+        return null;
+    };
+
+    public Route stopWebkitProxy = (request, response) -> {
+        try {
+            String[] processID = request.queryParamsValues("processID");
+            if (Integer.parseInt(processID[0]) != -1) {
+                String command = "kill -9 " + processID[0];
+                Runtime.getRuntime().exec(command);
+                return true;
+            } else {
+                return false;
+            }
         } catch (Exception e) {
             response.status(404);
             response.body(e.getMessage());

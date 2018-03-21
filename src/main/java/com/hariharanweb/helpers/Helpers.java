@@ -3,6 +3,7 @@ package com.hariharanweb.helpers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -61,5 +62,19 @@ public class Helpers {
         socket.connect(new InetSocketAddress("google.com", 80));
         return socket.getLocalAddress().toString()
                 .replace("/", "");
+    }
+
+    public int getPid(Process process) {
+
+        try {
+            Class<?> cProcessImpl = process.getClass();
+            Field fPid = cProcessImpl.getDeclaredField("pid");
+            if (!fPid.isAccessible()) {
+                fPid.setAccessible(true);
+            }
+            return fPid.getInt(process);
+        } catch (Exception e) {
+            return -1;
+        }
     }
 }
