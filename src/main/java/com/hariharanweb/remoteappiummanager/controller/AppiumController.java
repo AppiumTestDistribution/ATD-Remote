@@ -15,12 +15,17 @@ public class AppiumController {
     AppiumDriverLocalService appiumDriverLocalService;
     public Route startAppium = (request, response) -> {
         String appiumPath = null;
+        String port = null;
 
         String[] urlParameter = request.queryParamsValues("URL");
+        String[] userPort = request.queryParamsValues("PORT");
         if (urlParameter != null && urlParameter[0] != null) {
             appiumPath = urlParameter[0];
         }
-        startAppiumServer(appiumPath);
+        if (userPort != null && userPort[0] != null) {
+            port = userPort[0];
+        }
+        startAppiumServer(appiumPath,port);
         URL url = appiumDriverLocalService.getUrl();
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("port", url.getPort());
@@ -51,16 +56,20 @@ public class AppiumController {
         return response.body();
     };
 
-    private AppiumDriverLocalService startAppiumServer(String path) throws IOException {
+    private AppiumDriverLocalService startAppiumServer(String path, String port) throws IOException {
         String ipAddress = Helpers.getHostMachineIpAddress();
         AppiumServiceBuilder builder =
                 new AppiumServiceBuilder()
                         .withArgument(GeneralServerFlag.LOG_LEVEL, "info")
-                        .withIPAddress(ipAddress)
-                        .usingAnyFreePort();
+                        .withIPAddress(ipAddress);
 
         if (path != null && !path.isEmpty()) {
             builder.withAppiumJS(new File(path));
+        }
+        if (port !=null && !port.isEmpty()) {
+            builder.usingPort(Integer.parseInt(port));
+        } else {
+            builder.usingAnyFreePort();
         }
         appiumDriverLocalService = AppiumDriverLocalService.buildService(builder);
         appiumDriverLocalService.start();
