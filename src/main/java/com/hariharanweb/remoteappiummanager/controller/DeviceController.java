@@ -43,6 +43,17 @@ public class DeviceController {
         return null;
     };
 
+    public Route getBootedSims = ((request, response) -> {
+        try {
+            List<Device> devices = simulatorManager.getAllBootedSimulators("iOS");
+            return devices;
+        } catch (Exception e) {
+            response.status(404);
+            response.body(e.getMessage());
+        }
+        return null;
+    });
+
     public Route getIOSDevices = ((request, response) -> {
         try {
             List<Device> devices = iosManager.getDevices();

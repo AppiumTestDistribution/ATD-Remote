@@ -46,6 +46,7 @@ public class Server {
             path("/ios", () -> {
                 //Get all iOS Real devices
                 get("/realDevices", deviceController.getIOSRealDevices, new JsonTransformer());
+                get("/bootedSims", deviceController.getBootedSims, new JsonTransformer());
                 path("/webkitproxy", () -> {
                     get("/start", deviceController.startWebkitProxy, new JsonTransformer());
                     get("/stop", deviceController.stopWebkitProxy, new JsonTransformer());
