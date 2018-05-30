@@ -6,7 +6,7 @@
 
     <groupId>com.hariharanweb</groupId>
     <artifactId>RemoteAppiumManager</artifactId>
-    <version>1.0</version>
+    <version>1.2</version>
     <build>
         <plugins>
             <plugin>
@@ -92,7 +92,7 @@
         <dependency>
             <groupId>com.github.SrinivasanTarget</groupId>
             <artifactId>DeviceManager</artifactId>
-            <version>dd44594</version>
+            <version>90eec48</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
