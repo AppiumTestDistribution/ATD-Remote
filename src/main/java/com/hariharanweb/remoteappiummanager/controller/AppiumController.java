@@ -24,8 +24,6 @@ public class AppiumController {
         String appiumPath = null;
         String port = null;
 
-        request.queryParamsValues("SERVER_CAPS");
-
         JsonObject obj = helper.parseJson(request.body());
 
         JsonElement serverPath = obj.get("APPIUM_PATH");
