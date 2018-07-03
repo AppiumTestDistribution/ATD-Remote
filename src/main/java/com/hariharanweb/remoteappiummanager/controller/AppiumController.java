@@ -1,5 +1,7 @@
 package com.hariharanweb.remoteappiummanager.controller;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.hariharanweb.helpers.Helpers;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
@@ -10,21 +12,34 @@ import spark.Route;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
+import java.util.Set;
 
 public class AppiumController {
     AppiumDriverLocalService appiumDriverLocalService;
+    JsonElement serverCaps;
+    Helpers helper = new Helpers();
+
     public Route startAppium = (request, response) -> {
         String appiumPath = null;
         String port = null;
 
-        String[] urlParameter = request.queryParamsValues("URL");
-        String[] userPort = request.queryParamsValues("PORT");
-        if (urlParameter != null && urlParameter[0] != null) {
-            appiumPath = urlParameter[0];
+        request.queryParamsValues("SERVER_CAPS");
+
+        JsonObject obj = helper.parseJson(request.body());
+
+        JsonElement serverPath = obj.get("APPIUM_PATH");
+        JsonElement userPort = obj.get("PORT");
+        serverCaps = obj.get("SERVER_CAPS");
+
+        if (!serverPath.equals(JsonNull.INSTANCE)) {
+            appiumPath = serverPath.getAsString();
         }
-        if (userPort != null && userPort[0] != null) {
-            port = userPort[0];
+
+        if (!userPort.equals(JsonNull.INSTANCE) ) {
+            port = userPort.getAsString();
         }
+
         startAppiumServer(appiumPath,port);
         URL url = appiumDriverLocalService.getUrl();
         JsonObject jsonObject = new JsonObject();
@@ -71,6 +86,11 @@ public class AppiumController {
         } else {
             builder.usingAnyFreePort();
         }
+
+        if(serverCaps != null) {
+            addUserServerCaps(builder);
+        }
+
         appiumDriverLocalService = AppiumDriverLocalService.buildService(builder);
         appiumDriverLocalService.start();
         System.out.println(
@@ -82,5 +102,23 @@ public class AppiumController {
         return appiumDriverLocalService;
     }
 
+    private void addUserServerCaps (AppiumServiceBuilder builder){
 
+        Set<Map.Entry<String, JsonElement>> entries = serverCaps.getAsJsonObject().entrySet();
+
+        if(!entries.isEmpty()) {
+
+            for (Map.Entry<String, JsonElement> entry : entries) {
+
+                GeneralServerFlag serverArgument = helper.getServerArgument(entry.getKey());
+
+                if(serverArgument != null && !entry.getValue().toString().equals("null")){
+                    builder.withArgument(serverArgument, entry.getValue().getAsString());
+                }
+                else if(serverArgument !=null && entry.getValue().toString().equals("null")){
+                    builder.withArgument(serverArgument);
+                }
+            }
+        }
+    }
 }
