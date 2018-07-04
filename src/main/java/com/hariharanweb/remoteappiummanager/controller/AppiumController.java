@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class AppiumController {
     AppiumDriverLocalService appiumDriverLocalService;
-    JsonElement serverCaps;
+    String serverCaps;
     Helpers helper = new Helpers();
 
     public Route startAppium = (request, response) -> {
@@ -28,7 +28,7 @@ public class AppiumController {
 
         JsonElement serverPath = obj.get("APPIUM_PATH");
         JsonElement userPort = obj.get("PORT");
-        serverCaps = obj.get("SERVER_CAPS");
+        serverCaps = obj.get("SERVER_CAPS").getAsString();
 
         if (!serverPath.equals(JsonNull.INSTANCE)) {
             appiumPath = serverPath.getAsString();
@@ -102,7 +102,7 @@ public class AppiumController {
 
     private void addUserServerCaps (AppiumServiceBuilder builder){
 
-        Set<Map.Entry<String, JsonElement>> entries = serverCaps.getAsJsonObject().entrySet();
+        Set<Map.Entry<String, JsonElement>> entries = helper.parseJson(serverCaps).getAsJsonObject().entrySet();
 
         if(!entries.isEmpty()) {
 
