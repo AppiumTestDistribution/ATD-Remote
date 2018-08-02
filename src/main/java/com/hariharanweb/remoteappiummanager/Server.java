@@ -68,7 +68,7 @@ public class Server {
             get("/stop/:udid", deviceController.stopADBLog, new JsonTransformer());
         });
         path("/appium", () -> {
-            get("/start", appiumController.startAppium, new JsonTransformer());
+            post("/start", appiumController.startAppium, new JsonTransformer());
             get("/stop", appiumController.stopAppium, new JsonTransformer());
             get("/isRunning", appiumController.isAppiumServerRunning, new JsonTransformer());
             get("/logs", appiumController.getAppiumLogs);
